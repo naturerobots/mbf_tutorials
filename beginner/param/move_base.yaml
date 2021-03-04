@@ -1,9 +1,9 @@
 planners:
-  - name: NavfnROS
+  - name: navfn/NavfnROS
     type: navfn/NavfnROS
 
 controllers:
-  - name: DWAPlannerROS
+  - name: dwa_local_planner/DWAPlannerROS
     type: dwa_local_planner/DWAPlannerROS
 
 controller_frequency: 5.0

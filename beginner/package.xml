@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>turtlebot3_mbf</name>
+  <version>0.0.0</version>
+  <description>Minimal example for move base flex and turtlebot</description>
+
+  <maintainer email="gjulian@uos.de">Julian Gaal</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>turtlebot3_navigation</exec_depend>
+  <exec_depend>turtlebot3_gazebo</exec_depend>
+  <exec_depend>dwa_local_planner</exec_depend>
+  <exec_depend>move_base_flex</exec_depend>
+</package>
