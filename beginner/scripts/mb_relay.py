@@ -64,18 +64,12 @@ def mbf_feedback_cb(feedback):
 if __name__ == '__main__':
     rospy.init_node("move_base")
 
-    # TODO what happens with malformed target goal???  FAILURE  or INVALID_POSE
-    # txt must be:  "Aborting on goal because it was sent with an invalid quaternion"   
-
     # move_base_flex get_path and move_base action clients
     mbf_mb_ac = actionlib.SimpleActionClient("move_base_flex/move_base", mbf_msgs.MoveBaseAction)
     mbf_gp_ac = actionlib.SimpleActionClient("move_base_flex/get_path", mbf_msgs.GetPathAction)
     mbf_mb_ac.wait_for_server(rospy.Duration(20))
     mbf_gp_ac.wait_for_server(rospy.Duration(10))
 
-    # Cancel any leftover goals TODO
-    # rospy.loginfo("Cancelling all past goals!")
-    # mbf_mb_ac.cancel_all_goals()
 
     # move_base simple topic and action server
     mb_sg = rospy.Subscriber('move_base_simple/goal', PoseStamped, simple_goal_cb)
