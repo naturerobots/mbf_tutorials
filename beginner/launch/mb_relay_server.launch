@@ -1,0 +1,6 @@
+<launch>
+  <!-- Move Base Flex -->
+  <include file="$(find turtlebot3_mbf)/launch/mbf.launch"/>
+
+  <node name="move_base_relay" pkg="turtlebot3_mbf" type="mb_relay_server.py"/>
+</launch>

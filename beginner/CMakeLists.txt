@@ -9,6 +9,7 @@ find_package(catkin REQUIRED)
 
 catkin_package()
 
-catkin_install_python(PROGRAMS scripts/mb_relay.py scripts/mb_relay_a_to_b.py
+catkin_install_python(
+  PROGRAMS scripts/mb_relay.py scripts/mb_relay_client.py scripts/mb_relay_server.py scripts/mb_relay_subscriber.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

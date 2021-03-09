@@ -5,20 +5,15 @@
 # TODO how to credit 
 
 import actionlib
-import copy
-
 import rospy
-import nav_msgs.srv as nav_srvs
 import mbf_msgs.msg as mbf_msgs
 import move_base_msgs.msg as mb_msgs
-from dynamic_reconfigure.client import Client
-from geometry_msgs.msg import PoseStamped
-from move_base.cfg import MoveBaseConfig
 
-def simple_goal_cb(msg):
-    mbf_mb_ac.send_goal(mbf_msgs.MoveBaseGoal(target_pose=msg))
-    rospy.logdebug("Relaying move_base_simple/goal pose to mbf")
+def mb_execute_cb(msg):
+    mbf_mb_ac.send_goal(mbf_msgs.MoveBaseGoal(target_pose=msg.target_pose),
+                        feedback_cb=mbf_feedback_cb)
 
+    rospy.logdebug("Relaying move_base goal to mbf")
     mbf_mb_ac.wait_for_result()
 
     status = mbf_mb_ac.get_state()
@@ -30,14 +25,17 @@ def simple_goal_cb(msg):
     else:
         mb_as.set_aborted(mb_msgs.MoveBaseResult(), result.message)
 
+def mbf_feedback_cb(feedback):
+    mb_as.publish_feedback(mb_msgs.MoveBaseFeedback(base_position=feedback.current_pose))
+
 if __name__ == '__main__':
-    rospy.init_node("move_base_relay")
+    rospy.init_node("move_base")
 
-    # move base flex ation client relays incoming mb goals to mbf
+    # move_base_flex get_path and move_base action clients
     mbf_mb_ac = actionlib.SimpleActionClient("move_base_flex/move_base", mbf_msgs.MoveBaseAction)
-    mbf_mb_ac.wait_for_server(rospy.Duration(20))
+    mbf_mb_ac.wait_for_server(rospy.Duration(10))
 
-    # move_base simple topic and action server
-    mb_sg = rospy.Subscriber('move_base_simple/goal', PoseStamped, simple_goal_cb)
+    mb_as = actionlib.SimpleActionServer('move_base', mb_msgs.MoveBaseAction, mb_execute_cb, auto_start=False)
+    mb_as.start()
 
     rospy.spin()
