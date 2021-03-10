@@ -3,6 +3,8 @@ planners:
     type: navfn/NavfnROS
 
 controllers:
+  - name: eband_local_planner/EBandPlannerROS
+    type: eband_local_planner/EBandPlannerROS
   - name: dwa_local_planner/DWAPlannerROS
     type: dwa_local_planner/DWAPlannerROS
 

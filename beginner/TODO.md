@@ -1,8 +1,9 @@
 # TODO
 
 ## Misc
-* Credit rayman
-* cancel_goals
+- [ ] Credit rayman
+- [x] cancel_goals on shutdown hook
+- [ ] Circular Path with SimpleActionClient ((w/o) Relay)
 
 ## FAQ
 
@@ -12,5 +13,4 @@
 [ERROR] [/move_base_flex]: Could not load the plugin with the name "base_local_planner/TrajectoryPlanner" and the type "base_local_planner/TrajectoryPlanner"!
 ```
 
-#### Clear Move Base Goals
 
