@@ -48,7 +48,7 @@ def drive_circle():
             return 
 
 if __name__ == '__main__':
-    rospy.init_node("move_base")
+    rospy.init_node("move_base_flex_client")
 
     # move_base_flex get_path and move_base action clients
     mbf_ac = actionlib.SimpleActionClient("move_base_flex/move_base", mbf_msgs.MoveBaseAction)
