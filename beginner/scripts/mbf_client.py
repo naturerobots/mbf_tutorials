@@ -44,15 +44,18 @@ def drive_circle():
         result = move(goal)
 
         if result.outcome != mbf_msgs.MoveBaseResult.SUCCESS:
-            rospy.loginfo("Unable to complete action")
+            rospy.loginfo("Unable to complete action: %s", result.message)
             return 
 
 if __name__ == '__main__':
     rospy.init_node("move_base_flex_client")
 
-    # move_base_flex get_path and move_base action clients
+    # move_base_flex action client
     mbf_ac = actionlib.SimpleActionClient("move_base_flex/move_base", mbf_msgs.MoveBaseAction)
     mbf_ac.wait_for_server(rospy.Duration(10))
     rospy.loginfo("Connected to Move Base Flex action server!")
 
     drive_circle()
+
+    rospy.on_shutdown(lambda: mbf_mb_ac.cancel_all_goals())
+
