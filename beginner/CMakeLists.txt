@@ -14,7 +14,9 @@ catkin_install_python(
             scripts/mb_relay_client.py 
             scripts/mb_relay_server.py 
             scripts/mb_relay_subscriber.py 
-            scripts/mbf_client.py
+            scripts/mbf_goal_client.py
+            scripts/mbf_path_client.py
             scripts/circle_smach.py
+            scripts/temp.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
