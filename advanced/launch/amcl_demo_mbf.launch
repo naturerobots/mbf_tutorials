@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Base amcl demo-->
+  <include file="$(find mbf_advanced)/launch/amcl_demo_base.launch"/>
+
+  <!-- Move Base Flex -->
+  <include file="$(find mbf_advanced)/launch/mbf.launch"/>
+</launch>

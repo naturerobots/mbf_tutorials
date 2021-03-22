@@ -57,5 +57,5 @@ if __name__ == '__main__':
 
     drive_circle()
 
-    rospy.on_shutdown(lambda: mbf_mb_ac.cancel_all_goals())
+    rospy.on_shutdown(lambda: mbf_ac.cancel_all_goals())
 

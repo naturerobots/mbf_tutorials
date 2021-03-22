@@ -2,8 +2,8 @@
 
 <launch>
   <!-- Base amcl demo-->
-  <include file="$(find turtlebot3_mbf)/launch/amcl_demo_base.launch"/>
+  <include file="$(find mbf_beginner)/launch/amcl_demo_base.launch"/>
 
   <!-- Move Base Flex -->
-  <include file="$(find turtlebot3_mbf)/launch/mbf.launch"/>
+  <include file="$(find mbf_beginner)/launch/mbf.launch"/>
 </launch>

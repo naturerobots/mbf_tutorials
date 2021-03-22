@@ -7,6 +7,6 @@
     <rosparam file="$(find turtlebot3_navigation)/param/costmap_common_params_$(arg model).yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find turtlebot3_navigation)/param/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find turtlebot3_navigation)/param/global_costmap_params.yaml" command="load" />
-    <rosparam file="$(find mbf_beginner)/param/move_base_flex.yaml" command="load"/>
+    <rosparam file="$(find mbf_advanced)/param/move_base_flex.yaml" command="load"/>
   </node>
 </launch>
