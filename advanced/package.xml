@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>mbf_beginner</name>
+  <name>mbf_advanced</name>
   <version>0.0.0</version>
   <description>Minimal example for move base flex and turtlebot</description>
 

@@ -2,5 +2,5 @@
 
 <launch>
   <node pkg="rviz" type="rviz" name="rviz" required="true"
-        args="-d $(find mbf_beginner)/param/turtlebot3_navigation.rviz"/>
+        args="-d $(find mbf_advanced)/param/turtlebot3_navigation.rviz"/>
 </launch>

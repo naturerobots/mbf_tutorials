@@ -2,8 +2,8 @@
 
 <launch>
   <!-- Base amcl demo-->
-  <include file="$(find turtlebot3_mbf)/launch/amcl_demo_base.launch"/>
+  <include file="$(find mbf_beginner)/launch/amcl_demo_base.launch"/>
 
   <!-- Move base to Move Base Flex with Subscriber -->
-  <include file="$(find turtlebot3_mbf)/launch/mb_relay_subscriber.launch"/>
+  <include file="$(find mbf_beginner)/launch/mb_relay_subscriber.launch"/>
 </launch>

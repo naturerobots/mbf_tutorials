@@ -1,15 +1,5 @@
 # Move base flex demo
 
-
-## Turtlebot
-
-```sh
-export TURTLEBOT3_MODEL=burger
-roslaunch turtlebot3_gazebo turtlebot3_world.launch
-roslaunch turtlebot3_mbf amcl_demo.launch
-roslaunch turtlebot3_mbf rviz.launch
-```
-
-For full documentation, pls visit TODO
+The repo contains the Move Base Flex Tutorials and Demos on [uos.github.io/mbf_docs](https://uos.github.io/mbf_docs)
 
 ![](./turtlebot/demo.gif)
