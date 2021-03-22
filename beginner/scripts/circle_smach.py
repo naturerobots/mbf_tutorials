@@ -9,6 +9,7 @@ from mbf_msgs.msg import ExePathAction
 from mbf_msgs.msg import GetPathAction
 from mbf_msgs.msg import RecoveryAction
 
+
 def create_pose(x, y, z, xx, yy, zz, ww):
     pose = PoseStamped()
     pose.header.frame_id = "map"
@@ -64,7 +65,11 @@ def main():
     with sm:
         # path callback
         def get_path_callback(userdata, goal):
-            goal.target_pose = next(target_poses)
+            try:
+                goal.target_pose = next(target_poses)
+            except StopIteration:
+                rospy.logwarn("Reached last target pose")
+                rospy.signal_shutdown("Last goal reached. Shutting down")
 
         # Get path
         smach.StateMachine.add(
@@ -86,7 +91,7 @@ def main():
             }
         )
 
-        def exe_path_callback(userdata, goal):
+        def path_callback(userdata, goal):
             target_pose = goal.path.poses[-1].pose
             rospy.loginfo("Attempting to reach (%1.3f, %1.3f)", target_pose.position.x, target_pose.position.y)
 
@@ -96,7 +101,7 @@ def main():
             smach_ros.SimpleActionState(
                 '/move_base_flex/exe_path',
                 ExePathAction,
-                goal_cb=exe_path_callback,
+                goal_cb=path_callback,
                 goal_slots=['path']
             ),
             transitions={
@@ -107,7 +112,18 @@ def main():
         )
 
     # Execute SMACH plan
-    sm.execute()
+    # Create a thread to execute the smach container
+    smach_thread = threading.Thread(target=sm.execute)
+    smach_thread.start()
+
+    # Wait for ctrl-c
+    rospy.spin()
+
+    # Request the container to preempt
+    my_smach_con.request_preempt()
+
+    # Block until everything is preempted 
+    smach_thread.join()
 
 if __name__=="__main__":
     main()
