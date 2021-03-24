@@ -1,6 +1,7 @@
 import rospy
 import smach
 import smach_ros
+import threading
 
 from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Path
@@ -56,11 +57,8 @@ def main():
     sm = smach.StateMachine(outcomes=['succeeded', 'aborted', 'preempted'])
 
     # Define userdata
-    sm.userdata.goal = None
+    sm.userdata.target_pose = None
     sm.userdata.path = None
-    sm.userdata.error = None
-    sm.userdata.clear_costmap_flag = False
-    sm.userdata.error_status = None
 
     with sm:
         # path callback
@@ -85,13 +83,10 @@ def main():
                 'succeeded': 'EXE_PATH',
                 'aborted': 'aborted',
                 'preempted': 'preempted'
-            },
-            remapping={
-                'target_pose': 'goal'
             }
         )
 
-        def path_callback(userdata, goal):
+        def exe_path_callback(userdata, goal):
             target_pose = goal.path.poses[-1].pose
             rospy.loginfo("Attempting to reach (%1.3f, %1.3f)", target_pose.position.x, target_pose.position.y)
 
@@ -101,7 +96,7 @@ def main():
             smach_ros.SimpleActionState(
                 '/move_base_flex/exe_path',
                 ExePathAction,
-                goal_cb=path_callback,
+                goal_cb=exe_path_callback,
                 goal_slots=['path']
             ),
             transitions={
@@ -120,7 +115,7 @@ def main():
     rospy.spin()
 
     # Request the container to preempt
-    my_smach_con.request_preempt()
+    sm.request_preempt()
 
     # Block until everything is preempted 
     smach_thread.join()
