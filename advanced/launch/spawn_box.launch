@@ -1,0 +1,4 @@
+<launch>
+        <param name="box_description" command="$(find xacro)/xacro $(find mbf_advanced)/models/box.urdf.xacro"/> 
+        <node name="spawn_object" pkg="gazebo_ros" type="spawn_model" args="-param box_description -urdf -model box"/>   
+</launch>
