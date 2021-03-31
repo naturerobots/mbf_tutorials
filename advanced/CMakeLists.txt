@@ -42,3 +42,12 @@ target_compile_definitions(mbf_cpp_client_node
         PRIVATE
         POSE_PATH="${PROJECT_SOURCE_DIR}/param/poses.txt"
 )
+
+add_executable(mbf_behavior_tree src/mbf_behavior_tree.cpp)
+target_include_directories(mbf_behavior_tree PRIVATE include ${catkin_INCLUDE_DIRS})
+target_link_libraries(mbf_behavior_tree BT::behaviortree_cpp_v3 ${catkin_LIBRARIES})
+target_compile_definitions(mbf_behavior_tree
+        PRIVATE
+        BT_XML_PATH="${PROJECT_SOURCE_DIR}/param/mbf_behavior_tree.xml"
+        POSE_PATH="${PROJECT_SOURCE_DIR}/param/poses.txt"
+)

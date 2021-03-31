@@ -13,22 +13,21 @@ namespace mbf_advanced
 struct MBFClient
 {
     explicit MBFClient(std::vector<mbf_msgs::MoveBaseGoal> pose_goals)
-            : pose_goals(std::move(pose_goals))
-            , ac("move_base_flex/move_base", true)
+            : pose_goals_(std::move(pose_goals))
+            , it_(pose_goals_.begin())
+            , home_(pose_goals_.back())
+            , ac_("move_base_flex/move_base", true)
     {
-        ac.waitForServer();
+        ac_.waitForServer();
         ROS_INFO("Connected to MBF action server");
     }
 
-    bool perform()
+    bool performCircle()
     {
-        for (const auto& goal: pose_goals)
+        for (const auto& goal: pose_goals_)
         {
-            ROS_INFO_STREAM("Attempting to reach:\n" << goal.target_pose);
-            auto result = *mbf_advanced::move(ac, goal);
-            if (result.outcome != mbf_msgs::MoveBaseResult::SUCCESS)
+            if (!log_move(goal))
             {
-                ROS_ERROR_STREAM("Couldn't reach " << goal.target_pose);
                 return false;
             }
         }
@@ -36,8 +35,53 @@ struct MBFClient
         return true;
     }
 
-    std::vector<mbf_msgs::MoveBaseGoal> pose_goals;
-    actionlib::SimpleActionClient<mbf_msgs::MoveBaseAction> ac;
+    bool log_move(const mbf_msgs::MoveBaseGoal& goal)
+    {
+        ROS_INFO_STREAM("Attempting to reach " << goal.target_pose.pose.position.x << " / " << goal.target_pose.pose.position.y);
+        auto result = mbf_advanced::move(ac_, goal);
+        if (result->outcome != mbf_msgs::MoveBaseResult::SUCCESS)
+        {
+            ROS_ERROR_STREAM("Couldn't reach " << goal.target_pose.pose.position.x << " / " << goal.target_pose.pose.position.y);
+            return false;
+        }
+
+        return true;
+    }
+
+    bool next_move()
+    {
+        auto result = log_move(*it_);
+        ++it_;
+        if (it_ == pose_goals_.end())
+        {
+            it_ = pose_goals_.begin();
+        }
+        return result;
+    }
+
+    bool prev_move()
+    {
+        if (it_ != pose_goals_.begin())
+        {
+            --it_;
+            return log_move(*it_);
+        }
+        else
+        {
+            return driveHome();
+        }
+    }
+
+    bool driveHome()
+    {
+        ROS_WARN_STREAM("Driving home!");
+        return log_move(home_);
+    }
+
+    std::vector<mbf_msgs::MoveBaseGoal> pose_goals_;
+    std::vector<mbf_msgs::MoveBaseGoal>::const_iterator it_;
+    const mbf_msgs::MoveBaseGoal& home_;
+    actionlib::SimpleActionClient<mbf_msgs::MoveBaseAction> ac_;
 };
 
 } // end

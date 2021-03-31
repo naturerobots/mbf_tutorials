@@ -8,7 +8,7 @@ int main(int argc, char** argv)
     ros::NodeHandle n;
 
     mbf_advanced::MBFClient mbfclient(std::move(mbf_advanced::loadPoseGoals(POSE_PATH)));
-    mbfclient.perform();
+    mbfclient.performCircle();
 
     ROS_INFO_STREAM("Success");
 }

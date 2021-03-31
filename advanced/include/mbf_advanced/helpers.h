@@ -39,7 +39,6 @@ std::vector<mbf_msgs::MoveBaseGoal> loadPoseGoals(const std::string& filepath)
         goal.target_pose.pose.position = pose.position;
         goal.target_pose.pose.orientation = pose.orientation;
         pose_goals.push_back(goal);
-        ROS_INFO_STREAM("Loaded goal: " << goal);
     }
 
     return pose_goals;
