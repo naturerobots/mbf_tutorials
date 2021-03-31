@@ -1,3 +1,7 @@
+#include <fstream>
+#include <cassert>
+#include <ros/ros.h>
+#include <geometry_msgs/PoseStamped.h>
 #include <behaviortree_cpp_v3/bt_factory.h>
 
 BT::NodeStatus CheckBattery()
@@ -44,8 +48,31 @@ class ApproachObject : public BT::SyncActionNode
     }
 };
 
+std::vector<geometry_msgs::Pose> loadPoses(std::string filepath)
+{
+    std::ifstream infile(filepath);
+    std::vector<geometry_msgs::Pose> poses(8);
+
+    geometry_msgs::Pose pose;
+
+    while (infile >> pose.position.x
+                  >> pose.position.y
+                  >> pose.position.z
+                  >> pose.orientation.x
+                  >> pose.orientation.y
+                  >> pose.orientation.z
+                  >> pose.orientation.w)
+    {
+        poses.push_back(pose);
+    }
+
+    return poses;
+}
+
 int main()
 {
+    auto poses = loadPoses(POSE_PATH);
+
     BT::BehaviorTreeFactory factory;
 
     factory.registerNodeType<ApproachObject>("ApproachObject");

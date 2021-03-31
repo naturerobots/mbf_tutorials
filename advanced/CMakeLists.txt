@@ -20,4 +20,8 @@ catkin_install_python(
 
 add_executable(behavior_tree src/behavior_tree.cpp)
 target_link_libraries(behavior_tree BT::behaviortree_cpp_v3)
-target_compile_definitions(behavior_tree PRIVATE BT_XML_PATH="${PROJECT_SOURCE_DIR}/param/behavior_tree.xml")
+target_compile_definitions(behavior_tree
+        PRIVATE
+        BT_XML_PATH="${PROJECT_SOURCE_DIR}/param/behavior_tree.xml"
+        POSE_PATH="${PROJECT_SOURCE_DIR}/param/poses.txt"
+)
