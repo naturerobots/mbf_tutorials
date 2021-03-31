@@ -1,12 +1,15 @@
 #include <fstream>
-#include <cassert>
 #include <ros/ros.h>
-#include <geometry_msgs/PoseStamped.h>
 #include <behaviortree_cpp_v3/bt_factory.h>
+#include <actionlib/client/simple_action_client.h>
+#include <mbf_msgs/MoveBaseAction.h>
+#include <mbf_msgs/MoveBaseGoal.h>
+#include <mbf_advanced/helpers.h>
 
-BT::NodeStatus CheckBattery()
+
+BT::NodeStatus reachedHome()
 {
-    std::cout << "[ Battery: OK ]" << std::endl;
+    ROS_INFO_STREAM("Reached Home");
     return BT::NodeStatus::SUCCESS;
 }
 
@@ -48,36 +51,50 @@ class ApproachObject : public BT::SyncActionNode
     }
 };
 
-std::vector<geometry_msgs::Pose> loadPoses(std::string filepath)
+struct MBFClient
 {
-    std::ifstream infile(filepath);
-    std::vector<geometry_msgs::Pose> poses(8);
-
-    geometry_msgs::Pose pose;
-
-    while (infile >> pose.position.x
-                  >> pose.position.y
-                  >> pose.position.z
-                  >> pose.orientation.x
-                  >> pose.orientation.y
-                  >> pose.orientation.z
-                  >> pose.orientation.w)
+    MBFClient(std::vector<mbf_msgs::MoveBaseGoal> pose_goals)
+    : pose_goals(std::move(pose_goals))
+    , ac("move_base_flex/move_base", true)
     {
-        poses.push_back(pose);
+        ac.waitForServer();
+        ROS_INFO("Connected to MBF action server");
     }
 
-    return poses;
-}
+    bool perform()
+    {
+        for (const auto& goal: pose_goals)
+        {
+            ROS_INFO_STREAM("Attempting to reach " << goal);
+            auto result = *mbf_advanced::move(ac, goal);
+            if (result.outcome != mbf_msgs::MoveBaseResult::SUCCESS)
+            {
+                ROS_ERROR_STREAM("Couldn't reach " << goal);
+                return false;
+            }
+        }
 
-int main()
+        return true;
+    }
+
+    std::vector<mbf_msgs::MoveBaseGoal> pose_goals;
+    actionlib::SimpleActionClient<mbf_msgs::MoveBaseAction> ac;
+};
+
+
+int main(int argc, char** argv)
 {
-    auto poses = loadPoses(POSE_PATH);
+    ros::init(argc, argv, "behavior_tree");
+    ros::NodeHandle n;
+
+    MBFClient mbfclient(std::move(mbf_advanced::loadPoseGoals(POSE_PATH)));
+    mbfclient.perform();
 
     BT::BehaviorTreeFactory factory;
 
     factory.registerNodeType<ApproachObject>("ApproachObject");
 
-    factory.registerSimpleCondition("CheckBattery", std::bind(CheckBattery));
+    factory.registerSimpleCondition("CheckBattery", std::bind(reachedHome));
 
     GripperInterface gripper;
     factory.registerSimpleAction("OpenGripper", 
