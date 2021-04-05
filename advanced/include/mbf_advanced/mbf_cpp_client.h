@@ -15,6 +15,7 @@ struct MBFClient
     explicit MBFClient(std::vector<mbf_msgs::MoveBaseGoal> pose_goals)
             : pose_goals_(std::move(pose_goals))
             , it_(pose_goals_.begin())
+            , prev_move_(pose_goals_.begin())
             , home_(pose_goals_.back())
             , ac_("move_base_flex/move_base", true)
     {
@@ -50,21 +51,29 @@ struct MBFClient
 
     bool next_move()
     {
-        auto result = log_move(*it_);
-        ++it_;
-        if (it_ == pose_goals_.end())
+        if (at_end())
         {
-            it_ = pose_goals_.begin();
+            throw std::runtime_error("Reached end! No more next poses");
         }
+
+        auto result = log_move(*it_);
+        prev_move_ = it_;
+        ++it_;
         return result;
+    }
+
+    bool at_end()
+    {
+        return it_ == pose_goals_.end();
     }
 
     bool prev_move()
     {
-        if (it_ != pose_goals_.begin())
+        if (prev_move_ != pose_goals_.begin())
         {
-            --it_;
-            return log_move(*it_);
+            auto result = log_move(*prev_move_);
+            it_ = prev_move_+1;
+            return result;
         }
         else
         {
@@ -80,6 +89,7 @@ struct MBFClient
 
     std::vector<mbf_msgs::MoveBaseGoal> pose_goals_;
     std::vector<mbf_msgs::MoveBaseGoal>::const_iterator it_;
+    std::vector<mbf_msgs::MoveBaseGoal>::const_iterator prev_move_;
     const mbf_msgs::MoveBaseGoal& home_;
     actionlib::SimpleActionClient<mbf_msgs::MoveBaseAction> ac_;
 };
