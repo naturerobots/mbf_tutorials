@@ -53,7 +53,7 @@ struct MBFClient
     {
         if (at_end())
         {
-            throw std::runtime_error("Reached end! No more next poses");
+            throw std::runtime_error("Reached end! No more next poses. Exiting BT.");
         }
 
         auto result = log_move(*it_);

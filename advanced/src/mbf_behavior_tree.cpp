@@ -28,17 +28,7 @@ public:
         if (mbfclient_)
         {
             ROS_INFO_STREAM("BT: " << this->name());
-
-            try
-            {
-                auto status = mbfclient_->next_move() ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
-                return status;
-            }
-            catch (const std::runtime_error& e)
-            {
-                ROS_INFO_STREAM("Reached end of circle poses: " << e.what() << ". Returning BT::NodeStatus::Failure to break our of BT.");
-                return BT::NodeStatus::FAILURE;
-            }
+            return mbfclient_->next_move() ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
         }
 
         return BT::NodeStatus::FAILURE;
