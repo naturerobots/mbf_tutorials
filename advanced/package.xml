@@ -14,4 +14,7 @@
   <exec_depend>dwa_local_planner</exec_depend>
   <exec_depend>eband_local_planner</exec_depend>
   <exec_depend>move_base_flex</exec_depend>
+  <exec_depend>clear_costmap_recovery</exec_depend>
+  <exec_depend>rotate_recovery</exec_depend>
+  <exec_depend>behaviortree_cpp_v3</exec_depend>
 </package>

@@ -5,5 +5,5 @@
   <include file="$(find mbf_advanced)/launch/amcl_demo_base.launch"/>
 
   <!-- Move Base Flex -->
-  <include file="$(find mbf_advanced)/launch/mbf.launch"/>
+  <include file="$(find mbf_advanced)/launch/mbf_recovery.launch"/>
 </launch>
