@@ -1,0 +1,13 @@
+ <root main_tree_to_execute = "MainTree" >
+     <BehaviorTree ID="MainTree">
+        <Repeat num_cycles="-1">
+            <Sequence>
+                <Fallback>
+                    <start  name="start"/>
+                    <stop   name="stop"/>
+                </Fallback>
+                <final_stop name="final_stop"/>
+            </Sequence>
+        </Repeat>
+     </BehaviorTree>
+ </root>

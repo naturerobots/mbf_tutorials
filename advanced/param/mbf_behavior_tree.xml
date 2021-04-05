@@ -1,16 +1,14 @@
  <root main_tree_to_execute = "MainTree" >
     <BehaviorTree ID="MainTree">
-        <Repeat num_cycles="7">
-            <Sequence name="endless_circle">
-                <DriveHomeStart name="drive_home_start"/>
-                    <Repeat num_cycles="-1">
-                    <Fallback>
-                        <AttemptNext name="attempt_next"/>
-                        <AttemptPrevious name="attempt_previous"/>
-                        <DriveHomeEnd name="drive_home_end"/>
-                    </Fallback>
-                </Repeat>
-            </Sequence>
-        </Repeat>
+        <Sequence name="endless_circle">
+            <DriveHomeStart name="drive_home_start"/>
+                <Repeat num_cycles="-1">
+                <Fallback>
+                    <AttemptNext name="attempt_next"/>
+                    <AttemptPrevious name="attempt_previous"/>
+                    <DriveHomeEnd name="drive_home_end"/>
+                </Fallback>
+            </Repeat>
+        </Sequence>
     </BehaviorTree>
  </root>
