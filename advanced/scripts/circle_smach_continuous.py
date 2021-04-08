@@ -59,6 +59,9 @@ def main():
     # Define userdata
     sm.userdata.target_pose = None
     sm.userdata.path = None
+    sm.userdata.error = None
+    sm.userdata.clear_costmap_flag = False
+    sm.userdata.error_status = None
 
     with sm:
         # path callback
@@ -81,12 +84,12 @@ def main():
             ),
             transitions={
                 'succeeded': 'EXE_PATH',
-                'aborted': 'aborted',
+                'aborted': 'FAILED',
                 'preempted': 'preempted'
             }
         )
 
-        def exe_path_callback(userdata, goal):
+        def path_callback(userdata, goal):
             target_pose = goal.path.poses[-1].pose
             rospy.loginfo("Attempting to reach (%1.3f, %1.3f)", target_pose.position.x, target_pose.position.y)
 
@@ -96,14 +99,19 @@ def main():
             smach_ros.SimpleActionState(
                 '/move_base_flex/exe_path',
                 ExePathAction,
-                goal_cb=exe_path_callback,
+                goal_cb=path_callback,
                 goal_slots=['path']
             ),
             transitions={
                 'succeeded': 'GET_PATH',
-                'aborted': 'aborted',
+                'aborted': 'FAILED',
                 'preempted': 'preempted'
             }
+        )
+
+        smach.StateMachine.add(
+            'FAILED',
+
         )
 
     # Execute SMACH plan

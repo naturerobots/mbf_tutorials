@@ -2,13 +2,17 @@
     <BehaviorTree ID="MainTree">
         <Sequence name="endless_circle">
             <DriveHomeStart name="drive_home_start"/>
-                <Repeat num_cycles="-1">
-                <Fallback>
-                    <AttemptNext name="attempt_next"/>
-                    <AttemptPrevious name="attempt_previous"/>
-                    <DriveHomeEnd name="drive_home_end"/>
-                </Fallback>
-            </Repeat>
+                <ForceSuccess>
+                    <Repeat num_cycles="10">
+                        <Fallback>
+                            <AttemptNext name="attempt_next"/>
+                            <AttemptSkip name="attempt_skip"/>
+                            <AttemptPrevious name="attempt_previous"/>
+                            <AttemptSkipPrevious name="attempt_skip_previous"/>
+                        </Fallback>
+                    </Repeat>
+                </ForceSuccess>
+            <DriveHomeEnd name="drive_home_end"/>
         </Sequence>
     </BehaviorTree>
  </root>

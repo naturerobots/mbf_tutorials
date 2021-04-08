@@ -21,10 +21,10 @@ catkin_install_python(
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-add_executable(mbf_cpp_client_node src/mbf_cpp_client_node.cpp)
-target_include_directories(mbf_cpp_client_node PRIVATE include ${catkin_INCLUDE_DIRS})
-target_link_libraries(mbf_cpp_client_node ${catkin_LIBRARIES})
-target_compile_definitions(mbf_cpp_client_node
+add_executable(mbf_client_node src/mbf_client_node.cpp)
+target_include_directories(mbf_client_node PRIVATE include ${catkin_INCLUDE_DIRS})
+target_link_libraries(mbf_client_node ${catkin_LIBRARIES})
+target_compile_definitions(mbf_client_node
         PRIVATE
         POSE_PATH="${PROJECT_SOURCE_DIR}/param/poses.txt"
 )

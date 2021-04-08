@@ -10,14 +10,22 @@
 namespace mbf_advanced
 {
 
-struct MBFClient
+enum MBFCircleClientState
 {
-    explicit MBFClient(std::vector<mbf_msgs::MoveBaseGoal> pose_goals)
+    AT_END = 0,
+    MOVING,
+    FAILED
+};
+
+struct MBFCircleClient
+{
+    explicit MBFCircleClient(std::vector<mbf_msgs::MoveBaseGoal> pose_goals)
             : pose_goals_(std::move(pose_goals))
             , it_(pose_goals_.begin())
             , prev_move_(pose_goals_.begin())
             , home_(pose_goals_.back())
             , ac_("move_base_flex/move_base", true)
+            , terminate_(false)
     {
         ac_.waitForServer();
         ROS_INFO("Connected to MBF action server");
@@ -49,17 +57,19 @@ struct MBFClient
         return true;
     }
 
-    bool next_move()
+    MBFCircleClientState next_move()
     {
         if (at_end())
         {
-            throw std::runtime_error("Reached end! No more next poses. Exiting BT.");
+            ROS_INFO_STREAM("Reached end of circle");
+            terminate_ = true;
+            return MBFCircleClientState::AT_END;
         }
 
+        prev_move_ = it_-1;
         auto result = log_move(*it_);
-        prev_move_ = it_;
         ++it_;
-        return result;
+        return result ? MBFCircleClientState::MOVING : MBFCircleClientState::FAILED;
     }
 
     bool at_end()
@@ -67,18 +77,23 @@ struct MBFClient
         return it_ == pose_goals_.end();
     }
 
-    bool prev_move()
-    {
+    MBFCircleClientState prev_move()
+    {   
+        if (terminate_)
+        {
+            return MBFCircleClientState::AT_END;
+        }
+
         if (prev_move_ != pose_goals_.begin())
         {
             auto result = log_move(*prev_move_);
             it_ = prev_move_+1;
-            prev_move_ = it_-1;
-            return result;
+            --prev_move_;
+            return result ? MBFCircleClientState::MOVING : MBFCircleClientState::FAILED;
         }
         else
         {
-            return driveHome();
+            return driveHome() ? MBFCircleClientState::MOVING : MBFCircleClientState::FAILED;
         }
     }
 
@@ -93,6 +108,7 @@ struct MBFClient
     std::vector<mbf_msgs::MoveBaseGoal>::const_iterator prev_move_;
     const mbf_msgs::MoveBaseGoal& home_;
     actionlib::SimpleActionClient<mbf_msgs::MoveBaseAction> ac_;
+    bool terminate_;
 };
 
 } // end
