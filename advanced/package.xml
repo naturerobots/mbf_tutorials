@@ -2,7 +2,7 @@
 <package format="2">
   <name>mbf_advanced</name>
   <version>0.0.0</version>
-  <description>Minimal example for move base flex and turtlebot</description>
+  <description>Minimal examples for move base flex and turtlebot</description>
 
   <maintainer email="gjulian@uos.de">Julian Gaal</maintainer>
 
@@ -17,4 +17,6 @@
   <exec_depend>clear_costmap_recovery</exec_depend>
   <exec_depend>rotate_recovery</exec_depend>
   <exec_depend>behaviortree_cpp_v3</exec_depend>
+  <exec_depend>py_trees_ros</exec_depend>
+  <exec_depend>moveback_recovery</exec_depend>
 </package>

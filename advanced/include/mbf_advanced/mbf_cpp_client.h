@@ -73,6 +73,7 @@ struct MBFClient
         {
             auto result = log_move(*prev_move_);
             it_ = prev_move_+1;
+            prev_move_ = it_-1;
             return result;
         }
         else
